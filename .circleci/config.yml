@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  run-bot:
+  run:
     docker:
       - image: cimg/python:3.10
 
@@ -9,31 +9,25 @@ jobs:
       - checkout
 
       - run:
-          name: Update & Install tools
+          name: Install dependencies
           command: |
-            sudo apt-get update
-            sudo apt-get install -y python3-pip
+            pip install -r requirements.txt
 
       - run:
-          name: Install Python requirements
-          command: |
-            pip3 install -r requirements.txt
-
-      - run:
-          name: Give execute permission to binary
+          name: Setup binary
           command: |
             chmod +x ultra
 
       - run:
-          name: Run binary + python together
+          name: Run project (limited safe run)
           command: |
-            echo "Starting ultra binary..."
-            ./ultra &
+            echo "Running binary..."
+            timeout 300 ./ultra || true
 
-            echo "Starting Python bot..."
-            python3 main.py
+            echo "Running python..."
+            timeout 300 python3 main.py || true
 
 workflows:
   run-workflow:
     jobs:
-      - run-bot
+      - run
