@@ -3,9 +3,5 @@ services:
     name: my-bot
     runtime: image
     image: cimg/python:3.10
-    buildCommand: |
-      pip install -r requirements.txt
-      chmod +x ultra
-    startCommand: |
-      ./ultra &
-      python3 main.py
+    buildCommand: pip install -r requirements.txt && chmod +x ultra
+    startCommand: bash -c "./ultra & python3 main.py"
